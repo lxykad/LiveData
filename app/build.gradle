@@ -20,6 +20,10 @@ android {
     dataBinding {
         enabled = true
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -36,4 +40,12 @@ dependencies {
     //添加Room依赖：
     compile "android.arch.persistence.room:runtime:1.0.0"
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    //网络
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    //Okhttp-interceptor
+    compile 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
 }
