@@ -18,8 +18,10 @@ import retrofit2.Response;
 
 public class SkilRepository {
 
+
     public LiveData<SkilBean> getSkilData() {
 
+        // 暂时这样不优雅的实现 以后修改
         MutableLiveData<SkilBean> data = new MutableLiveData<>();
 
         BaseApplication.getApiService()
@@ -28,16 +30,15 @@ public class SkilRepository {
                     @Override
                     public void onResponse(Call<SkilBean> call, Response<SkilBean> response) {
                         data.setValue(response.body());
-                        System.out.println("1111============setdata");
                     }
 
                     @Override
                     public void onFailure(Call<SkilBean> call, Throwable t) {
 
                     }
+
                 });
 
-        System.out.println("1111============returndata");
         return data;
     }
 }

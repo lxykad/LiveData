@@ -1,5 +1,6 @@
 package com.lxy.livedata;
 
+import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -10,14 +11,13 @@ import com.lxy.livedata.repository.SkilRepository;
  * @date 2018/1/4
  */
 
-public class SkilViewModel extends ViewModel {
+public class SkilViewModel extends ViewModel implements LifecycleObserver{
 
     public LiveData<SkilBean> skilBean;
     public SkilRepository skilRepository;
 
-
     public void loadData() {
-        if (skilBean!=null) {
+        if (skilBean != null) {
             return;
         }
         skilRepository = new SkilRepository();
@@ -29,4 +29,9 @@ public class SkilViewModel extends ViewModel {
         return skilBean;
     }
 
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        System.out.println("=========clear====");
+    }
 }

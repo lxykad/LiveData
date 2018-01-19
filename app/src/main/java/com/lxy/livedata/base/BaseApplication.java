@@ -5,6 +5,12 @@ import android.util.Log;
 
 import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.common.HttpHelper;
+import com.lxy.livedata.di.component.AppComponent;
+import com.lxy.livedata.di.component.DaggerAppComponent;
+import com.lxy.livedata.di.component.DaggerMainComponent;
+import com.lxy.livedata.di.component.MainComponent;
+import com.lxy.livedata.di.module.AppModule;
+import com.lxy.livedata.di.module.MainModule;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,12 +28,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BaseApplication extends Application {
 
     private static BaseApplication instance;
+    private static ApiService mApiService;
+
+    private AppComponent mAppComponent;
+    private static MainComponent mMainComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         instance = this;
+
+        mAppComponent = DaggerAppComponent.builder().build();
+
+        mMainComponent = DaggerMainComponent.builder().appComponent(mAppComponent).mainModule(new MainModule()).build();
     }
 
     public static BaseApplication getInstance() {
@@ -35,15 +49,18 @@ public class BaseApplication extends Application {
     }
 
     public static ApiService getApiService() {
-        ApiService apiService = new Retrofit.Builder()
-                .client(getOkhttpClient().build())
-                .baseUrl(HttpHelper.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-                .create(ApiService.class);
+        if (mApiService == null) {
 
-        return apiService;
+            mApiService = new Retrofit.Builder()
+                    .client(getOkhttpClient().build())
+                    .baseUrl(HttpHelper.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build()
+                    .create(ApiService.class);
+        }
+
+        return mApiService;
     }
 
     public static OkHttpClient.Builder getOkhttpClient() {
@@ -62,6 +79,14 @@ public class BaseApplication extends Application {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         return builder;
+    }
+
+    public static MainComponent getMainComponent() {
+        return mMainComponent;
+    }
+
+    public AppComponent getAppComponent() {
+        return mAppComponent;
     }
 
 }
