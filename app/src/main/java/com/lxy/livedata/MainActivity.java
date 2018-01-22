@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
     @MainFier("params")
     User mUser2;
 
-  //  @Inject
-    Gson mGson;
+    @Inject
+    BaseApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //   System.out.println("1111====main====" + mUser.name);
-        System.out.println("1111===gson====" + mGson);
+        System.out.println("1111===app====" + application);
 
     }
 }

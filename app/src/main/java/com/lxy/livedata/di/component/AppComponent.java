@@ -1,6 +1,6 @@
 package com.lxy.livedata.di.component;
 
-import com.google.gson.Gson;
+import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.di.module.AppModule;
 
 import dagger.Component;
@@ -12,5 +12,5 @@ import dagger.Component;
 
 @Component(modules = AppModule.class)
 public interface AppComponent {
-   // Gson getGson();
+    BaseApplication getApplication();
 }

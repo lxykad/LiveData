@@ -39,7 +39,7 @@ public class BaseApplication extends Application {
 
         instance = this;
 
-        mAppComponent = DaggerAppComponent.builder().build();
+        mAppComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
 
         mMainComponent = DaggerMainComponent.builder().appComponent(mAppComponent).mainModule(new MainModule()).build();
     }

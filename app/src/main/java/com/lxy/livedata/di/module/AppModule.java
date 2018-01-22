@@ -1,7 +1,6 @@
 package com.lxy.livedata.di.module;
 
-import com.google.gson.Gson;
-
+import com.lxy.livedata.base.BaseApplication;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,8 +14,16 @@ import dagger.Provides;
 @Module
 public class AppModule {
 
-    @Provides
-    public Gson provideGson(){
-        return new Gson();
+    private BaseApplication mApplication;
+
+    public AppModule(BaseApplication application){
+        mApplication = application;
+
     }
+
+    @Provides
+    public BaseApplication provideApplication(){
+        return mApplication;
+    }
+
 }
