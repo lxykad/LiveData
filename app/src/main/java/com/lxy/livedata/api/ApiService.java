@@ -13,10 +13,7 @@ import retrofit2.http.Path;
 
 public interface ApiService {
 
-
     @GET("{type}/{count}/{page}")
-    public Call<SkilBean> loadSkilData(@Path("type") String type, @Path("count") int count, @Path("page") int page);
-
-
+    Call<SkilBean> loadSkilData(@Path("type") String type, @Path("count") int count, @Path("page") int page);
 
 }

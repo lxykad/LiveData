@@ -2,6 +2,7 @@ package com.lxy.livedata.di.module;
 
 import com.lxy.livedata.di.Qualifier.MainFier;
 import com.lxy.livedata.di.User;
+import com.lxy.livedata.di.scope.ActivityScope;
 
 import javax.inject.Singleton;
 
@@ -20,8 +21,8 @@ public class MainModule {
 
 
     @MainFier("no_params")
-    @Singleton
     @Provides
+    @ActivityScope
     public User provideUser(){
         return new User();
     }
@@ -31,13 +32,14 @@ public class MainModule {
     * */
 
     @MainFier("params")
-    @Singleton
     @Provides
+    @ActivityScope
     public User provideUserParams(String name){
         return new User(name);
     }
 
     @Provides
+    @ActivityScope
     public String provideName(){
         return "带参构造";
     }

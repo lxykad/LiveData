@@ -7,10 +7,8 @@ import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.common.HttpHelper;
 import com.lxy.livedata.di.component.AppComponent;
 import com.lxy.livedata.di.component.DaggerAppComponent;
-import com.lxy.livedata.di.component.DaggerMainComponent;
-import com.lxy.livedata.di.component.MainComponent;
 import com.lxy.livedata.di.module.AppModule;
-import com.lxy.livedata.di.module.MainModule;
+import com.lxy.livedata.di.module.HttpModule;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +29,6 @@ public class BaseApplication extends Application {
     private static ApiService mApiService;
 
     private AppComponent mAppComponent;
-    private static MainComponent mMainComponent;
 
     @Override
     public void onCreate() {
@@ -39,9 +36,10 @@ public class BaseApplication extends Application {
 
         instance = this;
 
-        mAppComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-
-        mMainComponent = DaggerMainComponent.builder().appComponent(mAppComponent).mainModule(new MainModule()).build();
+        mAppComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .httpModule(new HttpModule())
+                .build();
     }
 
     public static BaseApplication getInstance() {
@@ -79,10 +77,6 @@ public class BaseApplication extends Application {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         return builder;
-    }
-
-    public static MainComponent getMainComponent() {
-        return mMainComponent;
     }
 
     public AppComponent getAppComponent() {

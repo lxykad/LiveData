@@ -7,13 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.databinding.ActivitySkilBinding;
 import com.lxy.livedata.di.Qualifier.MainFier;
 import com.lxy.livedata.di.User;
-import com.lxy.livedata.di.component.DaggerMainComponent;
-import com.lxy.livedata.di.component.MainComponent;
 
 import javax.inject.Inject;
 
@@ -35,9 +31,7 @@ public class SkilActivity extends AppCompatActivity {
         setContentView(R.layout.activity_skil);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_skil);
 
-      //  BaseApplication.getMainComponent().injectSkil(this);
-
-        System.out.println("1111====skil====" + mUser.name);
+        System.out.println("1111====skil====" + mUser);
 
 
         mViewModel = ViewModelProviders.of(this).get(SkilViewModel.class);

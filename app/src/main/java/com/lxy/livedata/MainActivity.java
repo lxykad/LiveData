@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.databinding.ActivityMainBinding;
 import com.lxy.livedata.di.Qualifier.MainFier;
@@ -32,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     BaseApplication application;
 
+    @Inject
+    ApiService apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         getLifecycle().addObserver(new MainViewModel(getLifecycle(), mBinding));
 
-       // BaseApplication.getMainComponent().inject(this);
         DaggerMainComponent.builder()
                 .appComponent(BaseApplication.getInstance().getAppComponent())
                 .mainModule(new MainModule())
@@ -47,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
                 .inject(this);
 
 
-        //   System.out.println("1111====main====" + mUser.name);
-        System.out.println("1111===app====" + application);
 
     }
 }
