@@ -1,7 +1,5 @@
 package com.lxy.livedata.di;
 
-import javax.inject.Inject;
-
 /**
  * @author a
  * @date 2018/1/17

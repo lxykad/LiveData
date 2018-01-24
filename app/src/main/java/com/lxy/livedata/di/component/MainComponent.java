@@ -6,8 +6,6 @@ import com.lxy.livedata.di.module.MainModule;
 import com.lxy.livedata.di.scope.ActivityScope;
 import com.lxy.livedata.repository.SkilRepository;
 
-import javax.inject.Singleton;
-
 import dagger.Component;
 
 /**
