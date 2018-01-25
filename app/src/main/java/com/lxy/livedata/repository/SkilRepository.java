@@ -67,10 +67,9 @@ public class SkilRepository {
 
     public MediatorLiveData<Resource<SkilBean>> getRxData(){
 
-        MutableLiveData<SkilBean> data = new MutableLiveData<>();
         MediatorLiveData<Resource<SkilBean>> liveData = new MediatorLiveData<>();
 
-        mApiService.loadData("Android", 1, 2)
+        mApiService.loadData("Android", 20, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SkilBean>() {
@@ -82,13 +81,12 @@ public class SkilRepository {
 
                     @Override
                     public void onNext(SkilBean skilBean) {
-                       // data.setValue(skilBean);
                         liveData.setValue(Resource.success(skilBean));
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        liveData.setValue(Resource.error(e));
                     }
 
                     @Override
@@ -98,9 +96,6 @@ public class SkilRepository {
                 });
 
         return liveData;
-
-       // mApiService.loadData("Android", 1, 2)
-
 
     }
 }

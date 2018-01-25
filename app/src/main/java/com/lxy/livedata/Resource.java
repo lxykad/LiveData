@@ -17,8 +17,6 @@ public class Resource<T> {
     public final NetworkState status;
     @Nullable
     public final T data;
-    //   @Nullable
-    //  public final String message;
 
     public final Throwable error;
 
@@ -28,25 +26,12 @@ public class Resource<T> {
         this.error = error;
     }
 
-/*
-    private Resource(@Nullable NetworkState status, @Nullable T data, @Nullable String message) {
-        this.status = status;
-        this.data = data;
-        this.message = message;
-    }
-
-    */
-
     public static <T> Resource<T> success(@Nullable T data) {
         return new Resource<>(SUCCESS, data, null);
     }
 
-    public static <T> Resource<T> error(@Nullable T data,Throwable error) {
-        return new Resource<>(FAILED, data, error);
-    }
-
-    public static <T> Resource<T> loading(@Nullable T data) {
-        return new Resource<>(RUNNING, data, null);
+    public static <T> Resource<T> error(Throwable error) {
+        return new Resource<>(FAILED,null, error);
     }
 
     public static <T> Resource<T> loading() {
