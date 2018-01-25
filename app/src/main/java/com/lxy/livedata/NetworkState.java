@@ -7,7 +7,7 @@ package com.lxy.livedata;
 
 public enum NetworkState {
 
-    RUNNING,
+    LOADING,
     SUCCESS,
     FAILED
 }

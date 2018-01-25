@@ -3,7 +3,7 @@ package com.lxy.livedata;
 import javax.annotation.Nullable;
 
 import static com.lxy.livedata.NetworkState.FAILED;
-import static com.lxy.livedata.NetworkState.RUNNING;
+import static com.lxy.livedata.NetworkState.LOADING;
 import static com.lxy.livedata.NetworkState.SUCCESS;
 
 /**
@@ -35,6 +35,6 @@ public class Resource<T> {
     }
 
     public static <T> Resource<T> loading() {
-        return new Resource<>(RUNNING, null, null);
+        return new Resource<>(LOADING, null, null);
     }
 }

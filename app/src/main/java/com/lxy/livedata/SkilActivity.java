@@ -5,19 +5,27 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.widget.Toast;
 
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.databinding.ActivitySkilBinding;
+import com.lxy.livedata.db.ArticleDatabase;
 import com.lxy.livedata.di.Qualifier.MainFier;
 import com.lxy.livedata.di.User;
 import com.lxy.livedata.di.component.DaggerMainComponent;
 import com.lxy.livedata.ui.SkilAdapter;
+import com.lxy.livedata.ui.entity.SkilEntity;
 import com.lxy.livedata.utils.LoadingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.xml.transform.Source;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 /**
  * @author a
@@ -27,7 +35,7 @@ public class SkilActivity extends AppCompatActivity {
     private ActivitySkilBinding mBinding;
     private SkilViewModel mViewModel;
     private SkilAdapter mAdapter;
-    private List<SkilBean.ResultsBean> mList;
+    private List<SkilEntity> mList;
 
     @Inject
     @MainFier("no_params")
@@ -66,17 +74,51 @@ public class SkilActivity extends AppCompatActivity {
         mViewModel.skilBean.observe(this, skilBeanResource -> {
             NetworkState status = skilBeanResource.status;
             switch (status) {
-                case RUNNING:
+                case LOADING:
                     LoadingUtil.showLoading(this);
                     break;
                 case SUCCESS:
-                    mAdapter.addData(skilBeanResource.data.results);
                     LoadingUtil.dismiss(this);
+                    mAdapter.addData(skilBeanResource.data.results);
+                    get(null);
                     break;
                 case FAILED:
                     LoadingUtil.dismiss(this);
                     break;
             }
         });
+
+    }
+
+    public void get(List<SkilEntity> list) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+              /*  ArticleDatabase.getInstance(SkilActivity.this)
+                        .getSkillDao()
+                        .addEntityList(list);*/
+
+/*
+                List<SkilEntity> skillList = ArticleDatabase.getInstance(SkilActivity.this)
+                        .getSkillDao()
+                        .getSkillList();
+
+
+                ArticleDatabase.getInstance(SkilActivity.this)
+                        .getSkillDao()
+                        .deleteAllEntity(skillList);*/
+
+                SkilEntity entity = new SkilEntity();
+                entity.desc = "1";
+
+                List<SkilEntity> skillList = ArticleDatabase.getInstance(SkilActivity.this)
+                        .getSkillDao()
+                        .getSkillList();
+
+                System.out.println("size=========" + skillList.size());
+
+            }
+        }).start();
     }
 }

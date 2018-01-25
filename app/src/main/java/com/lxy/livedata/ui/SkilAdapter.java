@@ -6,6 +6,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.lxy.livedata.R;
 import com.lxy.livedata.SkilBean;
+import com.lxy.livedata.ui.entity.SkilEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,18 +16,18 @@ import java.util.List;
  * @date 2018/1/25
  */
 
-public class SkilAdapter extends BaseQuickAdapter<SkilBean.ResultsBean, BaseViewHolder> {
+public class SkilAdapter extends BaseQuickAdapter<SkilEntity, BaseViewHolder> {
 
-    private List<SkilBean.ResultsBean> mList;
+    private List<SkilEntity> mList;
 
-    public SkilAdapter(int layoutResId, @Nullable List<SkilBean.ResultsBean> data) {
+    public SkilAdapter(int layoutResId, @Nullable List<SkilEntity> data) {
         super(layoutResId, data);
         mList = new ArrayList<>();
         mList = data;
     }
 
     @Override
-    protected void convert(BaseViewHolder holder, SkilBean.ResultsBean bean) {
+    protected void convert(BaseViewHolder holder, SkilEntity bean) {
         holder.setText(R.id.tv_des, bean.desc);
     }
 }

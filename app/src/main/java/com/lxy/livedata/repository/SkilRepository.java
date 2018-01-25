@@ -47,7 +47,7 @@ public class SkilRepository {
 
 
         mApiService
-                .loadSkilData("Android", 1, 2)
+                .loadSkilData("Android", 2, 1)
                 .enqueue(new Callback<SkilBean>() {
 
                     @Override
