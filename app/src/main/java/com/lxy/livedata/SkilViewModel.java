@@ -32,7 +32,7 @@ public class SkilViewModel extends ViewModel {
 
     public void loadData(String type, int count, int page) {
         if (skilBean != null) {
-           // return;
+            return;
         }
         skilRepository = new SkilRepository();
         skilBean = skilRepository.getRxData(type, count, page);
