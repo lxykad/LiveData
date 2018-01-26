@@ -5,6 +5,9 @@ import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.lxy.livedata.repository.SkilRepository;
+import com.lxy.livedata.ui.entity.SkilEntity;
+
+import java.util.List;
 
 /**
  * @author a
@@ -17,6 +20,7 @@ public class SkilViewModel extends ViewModel {
     public SkilRepository skilRepository;
 
     public LiveData<Resource> mDataState;
+    public LiveData<List<SkilEntity>> mList;
 
     public SkilViewModel() {
 
@@ -26,12 +30,12 @@ public class SkilViewModel extends ViewModel {
         System.out.println("=========SkilViewModel====");
     }
 
-    public void loadData() {
+    public void loadData(String type, int count, int page) {
         if (skilBean != null) {
-            return;
+           // return;
         }
         skilRepository = new SkilRepository();
-        skilBean = skilRepository.getRxData();
+        skilBean = skilRepository.getRxData(type, count, page);
     }
 
     public MediatorLiveData<Resource<SkilBean>> getSkilBean() {

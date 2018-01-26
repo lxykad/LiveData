@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.lxy.livedata.R;
-import com.lxy.livedata.SkilBean;
 import com.lxy.livedata.ui.entity.SkilEntity;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ public class SkilAdapter extends BaseQuickAdapter<SkilEntity, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder holder, SkilEntity bean) {
-        holder.setText(R.id.tv_des, bean.desc);
+        holder.setText(R.id.tv_des, bean.desc)
+                .setText(R.id.tv_date, bean.createdAt);
     }
 }

@@ -3,13 +3,14 @@ package com.lxy.livedata;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.widget.Toast;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.databinding.ActivitySkilBinding;
-import com.lxy.livedata.db.ArticleDatabase;
 import com.lxy.livedata.di.Qualifier.MainFier;
 import com.lxy.livedata.di.User;
 import com.lxy.livedata.di.component.DaggerMainComponent;
@@ -21,21 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.xml.transform.Source;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 
 /**
  * @author a
  */
-public class SkilActivity extends AppCompatActivity {
+public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.RequestLoadMoreListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private ActivitySkilBinding mBinding;
     private SkilViewModel mViewModel;
     private SkilAdapter mAdapter;
     private List<SkilEntity> mList;
+    private int mPage = 1;
 
     @Inject
     @MainFier("no_params")
@@ -54,17 +52,23 @@ public class SkilActivity extends AppCompatActivity {
         mViewModel = ViewModelProviders.of(this).get(SkilViewModel.class);
 
         initAdapter();
-
-        mViewModel.loadData();
-
-        subscribeData();
+        loadData();
     }
 
     public void initAdapter() {
         mList = new ArrayList<>();
         mAdapter = new SkilAdapter(R.layout.list_item_skil, mList);
+        mAdapter.setOnLoadMoreListener(this, mBinding.recyclerView);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mBinding.recyclerView.setAdapter(mAdapter);
+
+        mBinding.refreshLayout.setOnRefreshListener(this);
+    }
+
+    public void loadData() {
+        mViewModel.loadData("Android", 15, mPage);
+        subscribeData();
     }
 
     public void subscribeData() {
@@ -75,50 +79,53 @@ public class SkilActivity extends AppCompatActivity {
             NetworkState status = skilBeanResource.status;
             switch (status) {
                 case LOADING:
-                    LoadingUtil.showLoading(this);
+                    if (mPage == 1) {
+                        LoadingUtil.showLoading(this);
+                    }
                     break;
                 case SUCCESS:
                     LoadingUtil.dismiss(this);
-                    mAdapter.addData(skilBeanResource.data.results);
-                    get(null);
+                    setList(skilBeanResource.data.results);
                     break;
                 case FAILED:
                     LoadingUtil.dismiss(this);
                     break;
             }
         });
-
     }
 
-    public void get(List<SkilEntity> list) {
+    public void setList(List<SkilEntity> list) {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-              /*  ArticleDatabase.getInstance(SkilActivity.this)
-                        .getSkillDao()
-                        .addEntityList(list);*/
+        if (mBinding.refreshLayout.isRefreshing()) {
+            mBinding.refreshLayout.setRefreshing(false);
+        }
 
-/*
-                List<SkilEntity> skillList = ArticleDatabase.getInstance(SkilActivity.this)
-                        .getSkillDao()
-                        .getSkillList();
+        if (mPage == 1) {
+            mList.clear();
+            mList.addAll(list);
+            mAdapter.notifyDataSetChanged();
+
+        } else {
+            // adapter.loadMoreEnd(true)// 没有分页数据时
+            // adapter.loadMoreEnd() //底部显示没有更多数据
+            mAdapter.loadMoreComplete();
+            mList.addAll(list);
+            mAdapter.notifyDataSetChanged();
+
+        }
+    }
 
 
-                ArticleDatabase.getInstance(SkilActivity.this)
-                        .getSkillDao()
-                        .deleteAllEntity(skillList);*/
+    @Override
+    public void onLoadMoreRequested() {
+        System.out.println("=========loadmore====");
+        mPage++;
+        loadData();
+    }
 
-                SkilEntity entity = new SkilEntity();
-                entity.desc = "1";
-
-                List<SkilEntity> skillList = ArticleDatabase.getInstance(SkilActivity.this)
-                        .getSkillDao()
-                        .getSkillList();
-
-                System.out.println("size=========" + skillList.size());
-
-            }
-        }).start();
+    @Override
+    public void onRefresh() {
+        mPage = 1;
+        loadData();
     }
 }

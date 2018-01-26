@@ -1,5 +1,6 @@
 package com.lxy.livedata.db;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -20,7 +21,7 @@ import java.util.List;
 public interface SkillEntityDao {
 
     @Query("select*from skill")
-    List<SkilEntity> getSkillList();
+    LiveData<List<SkilEntity>> getSkillList();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addEntity(SkilEntity entity);

@@ -1,15 +1,17 @@
 package com.lxy.livedata.repository;
 
-import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.MutableLiveData;
 
 import com.lxy.livedata.Resource;
 import com.lxy.livedata.SkilBean;
 import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.base.BaseApplication;
+import com.lxy.livedata.db.ArticleDatabase;
 import com.lxy.livedata.di.component.DaggerMainComponent;
+import com.lxy.livedata.ui.entity.SkilEntity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,9 +19,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * @author a
@@ -32,7 +31,7 @@ public class SkilRepository {
     @Inject
     ApiService mApiService;
 
-    public SkilRepository (){
+    public SkilRepository() {
 
         DaggerMainComponent.builder()
                 .appComponent(BaseApplication.getInstance().getAppComponent())
@@ -40,36 +39,11 @@ public class SkilRepository {
                 .injectSkilRep(this);
     }
 
-    public LiveData<SkilBean> getSkilData() {
-
-        // 暂时这样不优雅的实现 以后修改
-        MutableLiveData<SkilBean> data = new MutableLiveData<>();
-
-
-        mApiService
-                .loadSkilData("Android", 2, 1)
-                .enqueue(new Callback<SkilBean>() {
-
-                    @Override
-                    public void onResponse(Call<SkilBean> call, Response<SkilBean> response) {
-                        data.setValue(response.body());
-                    }
-
-                    @Override
-                    public void onFailure(Call<SkilBean> call, Throwable t) {
-
-                    }
-
-                });
-
-        return data;
-    }
-
-    public MediatorLiveData<Resource<SkilBean>> getRxData(){
+    public MediatorLiveData<Resource<SkilBean>> getRxData(String type, int count, int page) {
 
         MediatorLiveData<Resource<SkilBean>> liveData = new MediatorLiveData<>();
 
-        mApiService.loadData("Android", 20, 1)
+        mApiService.loadData(type, count, page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SkilBean>() {
@@ -96,6 +70,21 @@ public class SkilRepository {
                 });
 
         return liveData;
-
     }
+
+    public LiveData<List<SkilEntity>> getDBdata() {
+
+        LiveData<List<SkilEntity>> skillList = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
+                .getSkillDao()
+                .getSkillList();
+
+        return skillList;
+    }
+
+    public MediatorLiveData<Resource<SkilBean>> updateData() {
+
+
+        return null;
+    }
+
 }
