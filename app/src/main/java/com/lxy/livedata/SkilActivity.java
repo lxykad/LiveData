@@ -59,7 +59,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
         mList = new ArrayList<>();
         mAdapter = new SkilAdapter(R.layout.list_item_skil, mList);
         mAdapter.setOnLoadMoreListener(this, mBinding.recyclerView);
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mBinding.recyclerView.setAdapter(mAdapter);
 
@@ -85,7 +85,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
                     break;
                 case SUCCESS:
                     LoadingUtil.dismiss(this);
-                    setList(skilBeanResource.data.results);
+                    setList(skilBeanResource.data);
                     break;
                 case FAILED:
                     LoadingUtil.dismiss(this);
