@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.databinding.ActivitySkilBinding;
 import com.lxy.livedata.di.Qualifier.MainFier;
@@ -53,29 +52,51 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
 
         initAdapter();
         loadData();
+
     }
 
     public void initAdapter() {
         mList = new ArrayList<>();
         mAdapter = new SkilAdapter(R.layout.list_item_skil, mList);
         mAdapter.setOnLoadMoreListener(this, mBinding.recyclerView);
-        mAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
+        mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mBinding.recyclerView.setAdapter(mAdapter);
 
         mBinding.refreshLayout.setOnRefreshListener(this);
+
     }
 
     public void loadData() {
-        mViewModel.loadData("Android", 15, mPage);
+        mViewModel.loadData("Android", 10, mPage);
+
         subscribeData();
+
     }
 
     public void subscribeData() {
 
         // 数据更新时 可以收到通知
         // onstop 时 自动阻断数据流
-        mViewModel.skilBean.observe(this, skilBeanResource -> {
+//        mViewModel.skilBean.observe(this, skilBeanResource -> {
+//            NetworkState status = skilBeanResource.status;
+//            switch (status) {
+//                case LOADING:
+//                    if (mPage == 1) {
+//                        LoadingUtil.showLoading(this);
+//                    }
+//                    break;
+//                case SUCCESS:
+//                    LoadingUtil.dismiss(this);
+//                    setList(skilBeanResource.data);
+//                    break;
+//                case FAILED:
+//                    LoadingUtil.dismiss(this);
+//                    break;
+//            }
+//        });
+
+        mViewModel.liveDataBean.observe(this, skilBeanResource -> {
             NetworkState status = skilBeanResource.status;
             switch (status) {
                 case LOADING:
@@ -85,7 +106,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
                     break;
                 case SUCCESS:
                     LoadingUtil.dismiss(this);
-                    setList(skilBeanResource.data);
+                    setList(skilBeanResource.data.results);
                     break;
                 case FAILED:
                     LoadingUtil.dismiss(this);
@@ -100,6 +121,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
             mBinding.refreshLayout.setRefreshing(false);
         }
 
+        System.out.println("111======="+mPage);
         if (mPage == 1) {
             mList.clear();
             mList.addAll(list);
@@ -118,7 +140,6 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
 
     @Override
     public void onLoadMoreRequested() {
-        System.out.println("=========loadmore====");
         mPage++;
         loadData();
     }

@@ -36,7 +36,7 @@ public class RxHttpResponse {
                             return Observable.create(new ObservableOnSubscribe<T>() {
                                 @Override
                                 public void subscribe(ObservableEmitter<T> e) throws Exception {
-                                    System.out.println("list=====请求成功=="+tBaseBean.results);
+                                    System.out.println("list=====请求成功==");
                                     e.onNext(tBaseBean.results);
                                     e.onComplete();
                                 }

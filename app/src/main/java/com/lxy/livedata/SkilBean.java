@@ -1,8 +1,5 @@
 package com.lxy.livedata;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-
 import com.lxy.livedata.ui.entity.SkilEntity;
 
 import java.io.Serializable;

@@ -17,6 +17,7 @@ import java.util.List;
 public class SkilViewModel extends ViewModel {
 
     public MediatorLiveData<Resource<List<SkilEntity>>> skilBean;
+    public MediatorLiveData<Resource<SkilBean>> liveDataBean;
     public SkilRepository skilRepository;
 
     public LiveData<Resource> mDataState;
@@ -35,12 +36,18 @@ public class SkilViewModel extends ViewModel {
             return;
         }
         skilRepository = new SkilRepository();
-        skilBean = skilRepository.getDataList(type, count, page);
+       // skilBean = skilRepository.getDataList(type, count, page);
+        liveDataBean = skilRepository.getRxData(type,count,page);
     }
 
     public MediatorLiveData<Resource<List<SkilEntity>>> getSkilBean() {
 
         return skilBean;
+    }
+
+    public MediatorLiveData<Resource<SkilBean>> getLiveDataBean() {
+
+        return liveDataBean;
     }
 
     @Override

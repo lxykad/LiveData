@@ -84,12 +84,6 @@ public class SkilRepository {
         return skillList;
     }
 
-    public MediatorLiveData<Resource<SkilBean>> updateData() {
-
-
-        return null;
-    }
-
     public MediatorLiveData<Resource<List<SkilEntity>>> getDataList(String type, int count, int page) {
 
         MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
@@ -120,5 +114,6 @@ public class SkilRepository {
 
         return liveData;
     }
+
 
 }
