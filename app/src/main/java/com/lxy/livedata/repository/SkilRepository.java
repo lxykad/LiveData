@@ -3,9 +3,11 @@ package com.lxy.livedata.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.support.annotation.Nullable;
 import android.view.animation.BounceInterpolator;
 
 import com.lxy.livedata.Resource;
+import com.lxy.livedata.SkilActivity;
 import com.lxy.livedata.SkilBean;
 import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.base.BaseApplication;
@@ -98,25 +100,15 @@ public class SkilRepository {
         List<SkilEntity> list = dBdata.getValue();
 
         MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
-        liveData.setValue(Resource.success(list));
 
 
-
-        new Thread(new Runnable() {
+        dBdata.observe(SkilActivity.getInstance(), new android.arch.lifecycle.Observer<List<SkilEntity>>() {
             @Override
-            public void run() {
-
-                List<SkilEntity> list1 = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
-                        .getSkillDao()
-                        .getList();
-
-                MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
-                liveData.setValue(Resource.success(list1));
-
-                System.out.println("db=====list1=="+liveData.getValue());
+            public void onChanged(@Nullable List<SkilEntity> skilEntities) {
+                liveData.setValue(Resource.success(skilEntities));
+                System.out.println("db=====list1=="+liveData.getValue().data.size());
             }
-        }).start();
-
+        });
 
       //  System.out.println("db=====value==" + liveData.getValue().data);
         // 更新数据库

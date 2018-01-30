@@ -31,9 +31,15 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
     private List<SkilEntity> mList;
     private int mPage = 1;
 
+    private static SkilActivity instance;
+    public static SkilActivity getInstance(){
+        return instance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_skil);
 
         DaggerMainComponent.builder()
