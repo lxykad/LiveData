@@ -1,6 +1,5 @@
 package com.lxy.livedata;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -17,11 +16,7 @@ import java.util.List;
 public class SkilViewModel extends ViewModel {
 
     public MediatorLiveData<Resource<List<SkilEntity>>> skilBean;
-    public MediatorLiveData<Resource<SkilBean>> liveDataBean;
     public SkilRepository skilRepository;
-
-    public LiveData<Resource> mDataState;
-    public LiveData<List<SkilEntity>> mList;
 
     public SkilViewModel() {
 
@@ -32,22 +27,16 @@ public class SkilViewModel extends ViewModel {
     }
 
     public void loadData(String type, int count, int page) {
-        if (skilBean != null) {
-            return;
+        if (skilRepository == null) {
+            skilRepository = new SkilRepository();
         }
-        skilRepository = new SkilRepository();
-       // skilBean = skilRepository.getDataList(type, count, page);
-        liveDataBean = skilRepository.getRxData(type,count,page);
+
+        skilBean = skilRepository.getDataList(type, count, page);
     }
 
     public MediatorLiveData<Resource<List<SkilEntity>>> getSkilBean() {
 
         return skilBean;
-    }
-
-    public MediatorLiveData<Resource<SkilBean>> getLiveDataBean() {
-
-        return liveDataBean;
     }
 
     @Override

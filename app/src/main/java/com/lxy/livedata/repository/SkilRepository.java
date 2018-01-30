@@ -3,14 +3,12 @@ package com.lxy.livedata.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 
-import com.lxy.livedata.ListBean;
 import com.lxy.livedata.Resource;
 import com.lxy.livedata.SkilBean;
 import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.db.ArticleDatabase;
 import com.lxy.livedata.di.component.DaggerMainComponent;
-import com.lxy.livedata.rx.BaseBean;
 import com.lxy.livedata.rx.RxHttpResponse;
 import com.lxy.livedata.ui.entity.SkilEntity;
 

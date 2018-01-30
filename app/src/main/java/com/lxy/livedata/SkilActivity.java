@@ -28,6 +28,7 @@ import javax.inject.Inject;
 public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.RequestLoadMoreListener,
         SwipeRefreshLayout.OnRefreshListener {
 
+    public static final int PAGE_SIZE = 15;
     private ActivitySkilBinding mBinding;
     private SkilViewModel mViewModel;
     private SkilAdapter mAdapter;
@@ -51,8 +52,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
         mViewModel = ViewModelProviders.of(this).get(SkilViewModel.class);
 
         initAdapter();
-        loadData();
-
+        loadData(true);
     }
 
     public void initAdapter() {
@@ -60,6 +60,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
         mAdapter = new SkilAdapter(R.layout.list_item_skil, mList);
         mAdapter.setOnLoadMoreListener(this, mBinding.recyclerView);
         mAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+
         mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mBinding.recyclerView.setAdapter(mAdapter);
 
@@ -67,36 +68,16 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
 
     }
 
-    public void loadData() {
-        mViewModel.loadData("Android", 10, mPage);
-
-        subscribeData();
-
+    public void loadData(boolean isRefresh) {
+        mViewModel.loadData("Android", 15, mPage);
+        subscribeData(isRefresh);
     }
 
-    public void subscribeData() {
+    public void subscribeData(boolean isRefresh) {
 
         // 数据更新时 可以收到通知
         // onstop 时 自动阻断数据流
-//        mViewModel.skilBean.observe(this, skilBeanResource -> {
-//            NetworkState status = skilBeanResource.status;
-//            switch (status) {
-//                case LOADING:
-//                    if (mPage == 1) {
-//                        LoadingUtil.showLoading(this);
-//                    }
-//                    break;
-//                case SUCCESS:
-//                    LoadingUtil.dismiss(this);
-//                    setList(skilBeanResource.data);
-//                    break;
-//                case FAILED:
-//                    LoadingUtil.dismiss(this);
-//                    break;
-//            }
-//        });
-
-        mViewModel.liveDataBean.observe(this, skilBeanResource -> {
+        mViewModel.skilBean.observe(this, skilBeanResource -> {
             NetworkState status = skilBeanResource.status;
             switch (status) {
                 case LOADING:
@@ -106,47 +87,62 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
                     break;
                 case SUCCESS:
                     LoadingUtil.dismiss(this);
-                    setList(skilBeanResource.data.results);
+                    if (mBinding.refreshLayout.isRefreshing()) {
+                        mBinding.refreshLayout.setRefreshing(false);
+                    }
+                    if (isRefresh) {
+                        mAdapter.setEnableLoadMore(true);
+                    }
+                    setList(isRefresh, skilBeanResource.data);
                     break;
                 case FAILED:
                     LoadingUtil.dismiss(this);
+                    if (mBinding.refreshLayout.isRefreshing()) {
+                        mBinding.refreshLayout.setRefreshing(false);
+                    }
+                    if (isRefresh) {
+                        mAdapter.setEnableLoadMore(true);
+                    }
                     break;
             }
         });
     }
 
-    public void setList(List<SkilEntity> list) {
+    public void setList(boolean isRefresh, List<SkilEntity> list) {
 
-        if (mBinding.refreshLayout.isRefreshing()) {
-            mBinding.refreshLayout.setRefreshing(false);
-        }
-
-        System.out.println("111======="+mPage);
-        if (mPage == 1) {
+        int size = list == null ? 0 : list.size();
+        if (isRefresh) {
             mList.clear();
             mList.addAll(list);
             mAdapter.notifyDataSetChanged();
 
         } else {
-            // adapter.loadMoreEnd(true)// 没有分页数据时
-            // adapter.loadMoreEnd() //底部显示没有更多数据
-            mAdapter.loadMoreComplete();
-            mList.addAll(list);
-            mAdapter.notifyDataSetChanged();
+            if (size > 0) {
+                mAdapter.loadMoreComplete();
+                mList.addAll(list);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
 
+        if (size < PAGE_SIZE) {
+            //第一页如果不够一页就不显示没有更多数据布局
+            mAdapter.loadMoreEnd(isRefresh);
+        } else {
+            mAdapter.loadMoreComplete();
         }
     }
-
 
     @Override
     public void onLoadMoreRequested() {
         mPage++;
-        loadData();
+        loadData(false);
     }
 
     @Override
     public void onRefresh() {
         mPage = 1;
-        loadData();
+        // 防止下拉刷新的时候还可以上拉加载
+        mAdapter.setEnableLoadMore(false);
+        loadData(true);
     }
 }
