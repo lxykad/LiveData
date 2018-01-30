@@ -10,8 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.databinding.ActivitySkilBinding;
-import com.lxy.livedata.di.Qualifier.MainFier;
-import com.lxy.livedata.di.User;
 import com.lxy.livedata.di.component.DaggerMainComponent;
 import com.lxy.livedata.ui.SkilAdapter;
 import com.lxy.livedata.ui.entity.SkilEntity;
@@ -19,8 +17,6 @@ import com.lxy.livedata.utils.LoadingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * @author a
@@ -34,10 +30,6 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
     private SkilAdapter mAdapter;
     private List<SkilEntity> mList;
     private int mPage = 1;
-
-    @Inject
-    @MainFier("no_params")
-    User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +61,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
     }
 
     public void loadData(boolean isRefresh) {
-        mViewModel.loadData("Android", 15, mPage);
+        mViewModel.loadData("Android", 3, mPage);
         subscribeData(isRefresh);
     }
 
@@ -77,7 +69,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
 
         // 数据更新时 可以收到通知
         // onstop 时 自动阻断数据流
-        mViewModel.skilBean.observe(this, skilBeanResource -> {
+        mViewModel.liveList.observe(this, skilBeanResource -> {
             NetworkState status = skilBeanResource.status;
             switch (status) {
                 case LOADING:
@@ -93,7 +85,9 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
                     if (isRefresh) {
                         mAdapter.setEnableLoadMore(true);
                     }
-                    setList(isRefresh, skilBeanResource.data);
+                    if (skilBeanResource.data != null) {
+                        setList(isRefresh, skilBeanResource.data);
+                    }
                     break;
                 case FAILED:
                     LoadingUtil.dismiss(this);

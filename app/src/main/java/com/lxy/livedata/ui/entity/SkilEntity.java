@@ -9,7 +9,7 @@ import android.arch.persistence.room.PrimaryKey;
  * 不指定表明 默认类名作为表名
  */
 
-@Entity(tableName = "skill")
+@Entity(tableName = "android")
 public class SkilEntity {
 
     @PrimaryKey(autoGenerate = true)

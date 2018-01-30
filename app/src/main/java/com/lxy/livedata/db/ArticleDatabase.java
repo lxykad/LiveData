@@ -19,7 +19,7 @@ public abstract class ArticleDatabase extends RoomDatabase {
 
     public static ArticleDatabase getInstance(Context context){
         if (sInstance == null) {
-            sInstance = Room.databaseBuilder(context.getApplicationContext(),ArticleDatabase.class,"skill.db").build();
+            sInstance = Room.databaseBuilder(context.getApplicationContext(),ArticleDatabase.class,"android.db").build();
         }
 
         return sInstance;

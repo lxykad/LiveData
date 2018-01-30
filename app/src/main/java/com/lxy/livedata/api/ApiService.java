@@ -1,6 +1,5 @@
 package com.lxy.livedata.api;
 
-import com.lxy.livedata.ListBean;
 import com.lxy.livedata.SkilBean;
 import com.lxy.livedata.rx.BaseBean;
 import com.lxy.livedata.ui.entity.SkilEntity;
@@ -25,6 +24,12 @@ public interface ApiService {
     @GET("{type}/{count}/{page}")
     Observable<SkilBean> loadData(@Path("type") String type, @Path("count") int count, @Path("page") int page);
 
+    /**
+     * @param type
+     * @param count
+     * @param page
+     * @return
+     */
     @GET("{type}/{count}/{page}")
     Observable<BaseBean<List<SkilEntity>>> loadList(@Path("type") String type, @Path("count") int count, @Path("page") int page);
 }

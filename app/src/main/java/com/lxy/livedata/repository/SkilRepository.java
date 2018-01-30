@@ -2,12 +2,15 @@ package com.lxy.livedata.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.view.animation.BounceInterpolator;
 
 import com.lxy.livedata.Resource;
 import com.lxy.livedata.SkilBean;
 import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.db.ArticleDatabase;
+import com.lxy.livedata.db.SkillEntityDao;
 import com.lxy.livedata.di.component.DaggerMainComponent;
 import com.lxy.livedata.rx.RxHttpResponse;
 import com.lxy.livedata.ui.entity.SkilEntity;
@@ -40,6 +43,9 @@ public class SkilRepository {
                 .injectSkilRep(this);
     }
 
+    /**
+     * 未处理
+     */
     public MediatorLiveData<Resource<SkilBean>> getRxData(String type, int count, int page) {
 
         MediatorLiveData<Resource<SkilBean>> liveData = new MediatorLiveData<>();
@@ -82,26 +88,72 @@ public class SkilRepository {
         return skillList;
     }
 
+    /**
+     * 统一处理的错误
+     */
     public MediatorLiveData<Resource<List<SkilEntity>>> getDataList(String type, int count, int page) {
+
+        LiveData<List<SkilEntity>> dBdata = getDBdata();
+
+        List<SkilEntity> list = dBdata.getValue();
+
+        MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
+        liveData.setValue(Resource.success(list));
+
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                List<SkilEntity> list1 = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
+                        .getSkillDao()
+                        .getList();
+
+                MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
+                liveData.setValue(Resource.success(list1));
+
+                System.out.println("db=====list1=="+liveData.getValue());
+            }
+        }).start();
+
+
+      //  System.out.println("db=====value==" + liveData.getValue().data);
+        // 更新数据库
+        // updateDb(type, count, page);
+
+        return liveData;
+    }
+
+    public void updateDb(String type, int count, int page) {
+
+        SkillEntityDao skillDao = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
+                .getSkillDao();
 
         MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
 
-        mApiService.loadList(type,count,page)
+        mApiService.loadList(type, count, page)
                 .compose(RxHttpResponse.handResult())
                 .subscribe(new Observer<List<SkilEntity>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        liveData.setValue(Resource.loading());
+                        //  liveData.setValue(Resource.loading());
                     }
 
                     @Override
                     public void onNext(List<SkilEntity> list) {
-                        liveData.setValue(Resource.success(list));
+                        // liveData.setValue(Resource.success(list));
+
+                        for (SkilEntity entity : list) {
+                            skillDao.addEntity(entity);
+                            System.out.println("db=====success==" + entity.desc);
+                        }
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        liveData.setValue(Resource.error(e));
+                        //  liveData.setValue(Resource.error(e));
                     }
 
                     @Override
@@ -109,9 +161,6 @@ public class SkilRepository {
 
                     }
                 });
-
-        return liveData;
     }
-
 
 }

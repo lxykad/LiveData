@@ -20,8 +20,11 @@ import java.util.List;
 @Dao
 public interface SkillEntityDao {
 
-    @Query("select*from skill")
+    @Query("select*from android")
     LiveData<List<SkilEntity>> getSkillList();
+
+    @Query("select*from android")
+    List<SkilEntity> getList();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addEntity(SkilEntity entity);
