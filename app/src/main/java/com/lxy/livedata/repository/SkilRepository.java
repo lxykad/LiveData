@@ -1,8 +1,10 @@
 package com.lxy.livedata.repository;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.support.annotation.Nullable;
 import android.view.animation.BounceInterpolator;
 
@@ -13,6 +15,7 @@ import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.db.ArticleDatabase;
 import com.lxy.livedata.db.SkillEntityDao;
+import com.lxy.livedata.di.User;
 import com.lxy.livedata.di.component.DaggerMainComponent;
 import com.lxy.livedata.rx.RxHttpResponse;
 import com.lxy.livedata.ui.entity.SkilEntity;
@@ -97,22 +100,20 @@ public class SkilRepository {
 
         LiveData<List<SkilEntity>> dBdata = getDBdata();
 
-        List<SkilEntity> list = dBdata.getValue();
-
         MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
-
 
         dBdata.observe(SkilActivity.getInstance(), new android.arch.lifecycle.Observer<List<SkilEntity>>() {
             @Override
             public void onChanged(@Nullable List<SkilEntity> skilEntities) {
                 liveData.setValue(Resource.success(skilEntities));
-                System.out.println("db=====list1=="+liveData.getValue().data.size());
+                SkillEntityDao skillDao = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
+                        .getSkillDao();
+                System.out.println("db=====list1==" + liveData.getValue().data.size());
             }
         });
 
-      //  System.out.println("db=====value==" + liveData.getValue().data);
         // 更新数据库
-        // updateDb(type, count, page);
+      //  updateDb(type, count, page);
 
         return liveData;
     }
@@ -135,17 +136,17 @@ public class SkilRepository {
                     @Override
                     public void onNext(List<SkilEntity> list) {
                         // liveData.setValue(Resource.success(list));
-
+                      //  System.out.println("db=====success==");
+                       //  skillDao.addEntityList(list);
                         for (SkilEntity entity : list) {
                             skillDao.addEntity(entity);
-                            System.out.println("db=====success==" + entity.desc);
                         }
-
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         //  liveData.setValue(Resource.error(e));
+                        System.out.println("db=====err==");
                     }
 
                     @Override

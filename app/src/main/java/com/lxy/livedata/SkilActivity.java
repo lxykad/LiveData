@@ -67,7 +67,7 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
     }
 
     public void loadData(boolean isRefresh) {
-        mViewModel.loadData("Android", 3, mPage);
+        mViewModel.loadData("Android", 15, mPage);
         subscribeData(isRefresh);
     }
 

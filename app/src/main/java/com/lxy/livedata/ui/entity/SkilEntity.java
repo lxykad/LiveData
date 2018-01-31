@@ -2,6 +2,9 @@ package com.lxy.livedata.ui.entity;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author a
@@ -9,12 +12,11 @@ import android.arch.persistence.room.PrimaryKey;
  * 不指定表明 默认类名作为表名
  */
 
-@Entity(tableName = "android")
+@Entity(tableName = "android2")
 public class SkilEntity {
 
-    @PrimaryKey(autoGenerate = true)
-    public int skillId;
-
+    @PrimaryKey
+    @NonNull
     public String _id;
     public String createdAt;
     public String desc;
@@ -25,19 +27,6 @@ public class SkilEntity {
     public boolean used;
     public String who;
 
-    @Override
-    public String toString() {
-        return "SkilEntity{" +
-                "skillId=" + skillId +
-                ", _id='" + _id + '\'' +
-                ", createdAt='" + createdAt + '\'' +
-                ", desc='" + desc + '\'' +
-                ", publishedAt='" + publishedAt + '\'' +
-                ", source='" + source + '\'' +
-                ", type='" + type + '\'' +
-                ", url='" + url + '\'' +
-                ", used=" + used +
-                ", who='" + who + '\'' +
-                '}';
-    }
+    public String test;
+    public String test2;
 }
