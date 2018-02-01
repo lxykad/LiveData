@@ -4,8 +4,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import javax.annotation.Nonnull;
-
 /**
  * @author a
  * @date 2018/1/25

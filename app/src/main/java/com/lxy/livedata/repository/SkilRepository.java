@@ -23,6 +23,7 @@ import com.lxy.livedata.ui.entity.SkilEntity;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -84,11 +85,11 @@ public class SkilRepository {
         return liveData;
     }
 
-    public LiveData<List<SkilEntity>> getDBdata() {
+    public LiveData<List<SkilEntity>> getDBdata(int startCount) {
 
         LiveData<List<SkilEntity>> skillList = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
                 .getSkillDao()
-                .getSkillList();
+                .getPageList(startCount);
 
         return skillList;
     }
@@ -98,7 +99,8 @@ public class SkilRepository {
      */
     public MediatorLiveData<Resource<List<SkilEntity>>> getDataList(String type, int count, int page) {
 
-        LiveData<List<SkilEntity>> dBdata = getDBdata();
+        int startCount = (page - 1) * 15;
+        LiveData<List<SkilEntity>> dBdata = getDBdata(startCount);
 
         MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
 
@@ -109,11 +111,12 @@ public class SkilRepository {
                 SkillEntityDao skillDao = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
                         .getSkillDao();
                 System.out.println("db=====list1==" + liveData.getValue().data.size());
+
             }
         });
 
         // 更新数据库
-      //  updateDb(type, count, page);
+       // updateDb(type, count, page);
 
         return liveData;
     }
@@ -136,8 +139,8 @@ public class SkilRepository {
                     @Override
                     public void onNext(List<SkilEntity> list) {
                         // liveData.setValue(Resource.success(list));
-                      //  System.out.println("db=====success==");
-                       //  skillDao.addEntityList(list);
+                        //  System.out.println("db=====success==");
+                        //  skillDao.addEntityList(list);
                         for (SkilEntity entity : list) {
                             skillDao.addEntity(entity);
                         }

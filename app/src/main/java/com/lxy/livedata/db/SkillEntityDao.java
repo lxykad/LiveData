@@ -23,6 +23,9 @@ public interface SkillEntityDao {
     @Query("select*from android2")
     LiveData<List<SkilEntity>> getSkillList();
 
+    @Query("select*from android2 limit 15 offset :startCount")
+    LiveData<List<SkilEntity>> getPageList(int startCount);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addEntity(SkilEntity entity);
 
