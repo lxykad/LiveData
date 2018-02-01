@@ -1,13 +1,10 @@
 package com.lxy.livedata.repository;
 
-import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.support.annotation.Nullable;
-import android.view.animation.BounceInterpolator;
 
+import com.blankj.utilcode.util.NetworkUtils;
 import com.lxy.livedata.Resource;
 import com.lxy.livedata.SkilActivity;
 import com.lxy.livedata.SkilBean;
@@ -15,7 +12,6 @@ import com.lxy.livedata.api.ApiService;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.db.ArticleDatabase;
 import com.lxy.livedata.db.SkillEntityDao;
-import com.lxy.livedata.di.User;
 import com.lxy.livedata.di.component.DaggerMainComponent;
 import com.lxy.livedata.rx.RxHttpResponse;
 import com.lxy.livedata.ui.entity.SkilEntity;
@@ -23,7 +19,6 @@ import com.lxy.livedata.ui.entity.SkilEntity;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.sql.DataSource;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -99,6 +94,22 @@ public class SkilRepository {
      */
     public MediatorLiveData<Resource<List<SkilEntity>>> getDataList(String type, int count, int page) {
 
+        if (NetworkUtils.isConnected()) {
+            return updateDb(type, count, page);
+        } else {
+            return getLocalData(type, count, page);
+        }
+    }
+
+    /**
+     * 查询本地数据库数据
+     *
+     * @param type
+     * @param count
+     * @param page
+     * @return
+     */
+    public MediatorLiveData<Resource<List<SkilEntity>>> getLocalData(String type, int count, int page) {
         int startCount = (page - 1) * 15;
         LiveData<List<SkilEntity>> dBdata = getDBdata(startCount);
 
@@ -111,17 +122,29 @@ public class SkilRepository {
                 SkillEntityDao skillDao = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
                         .getSkillDao();
                 System.out.println("db=====list1==" + liveData.getValue().data.size());
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        skillDao.deleteAllEntity(skilEntities);
+//                    }
+//                }).start();
 
             }
         });
 
-        // 更新数据库
-       // updateDb(type, count, page);
-
         return liveData;
     }
 
-    public void updateDb(String type, int count, int page) {
+
+    /**
+     * 查询网络数据
+     *
+     * @param type
+     * @param count
+     * @param page
+     * @return
+     */
+    public MediatorLiveData<Resource<List<SkilEntity>>> updateDb(String type, int count, int page) {
 
         SkillEntityDao skillDao = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
                 .getSkillDao();
@@ -133,22 +156,22 @@ public class SkilRepository {
                 .subscribe(new Observer<List<SkilEntity>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        //  liveData.setValue(Resource.loading());
+                        liveData.setValue(Resource.loading());
                     }
 
                     @Override
                     public void onNext(List<SkilEntity> list) {
-                        // liveData.setValue(Resource.success(list));
-                        //  System.out.println("db=====success==");
-                        //  skillDao.addEntityList(list);
+                        liveData.postValue(Resource.success(list));
+
                         for (SkilEntity entity : list) {
                             skillDao.addEntity(entity);
                         }
+                        System.out.println("db=====add==" + page);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        //  liveData.setValue(Resource.error(e));
+                        liveData.setValue(Resource.error(e));
                         System.out.println("db=====err==");
                     }
 
@@ -157,6 +180,7 @@ public class SkilRepository {
 
                     }
                 });
+        return liveData;
     }
 
 }

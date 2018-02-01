@@ -3,6 +3,7 @@ package com.lxy.livedata.base;
 import android.app.Application;
 import android.util.Log;
 
+import com.blankj.utilcode.util.Utils;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.lxy.livedata.api.ApiService;
@@ -43,6 +44,7 @@ public class BaseApplication extends Application {
                 .httpModule(new HttpModule())
                 .build();
         init();
+        Utils.init(this);
     }
 
     public static BaseApplication getInstance() {

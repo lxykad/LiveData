@@ -2,15 +2,16 @@ package com.lxy.livedata.ui;
 
 import android.graphics.Color;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.lxy.livedata.R;
 import com.lxy.livedata.ui.entity.SkilEntity;
+import com.lxy.livedata.utils.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,8 +23,6 @@ public class SkilAdapter extends BaseQuickAdapter<SkilEntity, BaseViewHolder> {
 
     private List<SkilEntity> mList;
 
-
-
     public SkilAdapter(int layoutResId, @Nullable List<SkilEntity> data) {
         super(layoutResId, data);
         mList = new ArrayList<>();
@@ -32,8 +31,12 @@ public class SkilAdapter extends BaseQuickAdapter<SkilEntity, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder holder, SkilEntity bean) {
+
+        Date date = DateUtil.parseDate(bean.createdAt);
+        String str = DateUtil.formatDate(date);
+
         holder.setText(R.id.tv_des, bean.desc)
-                .setText(R.id.tv_date, bean.createdAt);
+                .setText(R.id.tv_date, str);
         TextView tv = holder.getView(R.id.tv_des);
         // 测试代码
         if (bean._id.equals("5a685120421aa911548992ab")) {
