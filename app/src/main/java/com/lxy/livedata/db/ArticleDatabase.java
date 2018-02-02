@@ -15,7 +15,7 @@ import com.lxy.livedata.ui.entity.SkilEntity;
  * @date 2018/1/25
  */
 
-@Database(entities = {SkilEntity.class}, version = 4, exportSchema = false)
+@Database(entities = {SkilEntity.class}, version = 8, exportSchema = false)
 public abstract class ArticleDatabase extends RoomDatabase {
 
     private static ArticleDatabase sInstance;
@@ -31,12 +31,12 @@ public abstract class ArticleDatabase extends RoomDatabase {
     }
 
     // 升级数据库表
-    static final Migration MIGRATION = new Migration(3, 4) {
+    static final Migration MIGRATION = new Migration(7, 8) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             //添加一列
             database.execSQL("alter table 'android2' "
-                    + " add column 'test2' TEXT ");
+                    + " add column 'sortDate' INTEGER");
         }
     };
 

@@ -23,7 +23,7 @@ public interface SkillEntityDao {
     @Query("select*from android2")
     LiveData<List<SkilEntity>> getSkillList();
 
-    @Query("select*from android2 limit 15 offset :startCount")
+    @Query("select*from android2 order by sortDate desc limit 15 offset :startCount")
     LiveData<List<SkilEntity>> getPageList(int startCount);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

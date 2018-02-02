@@ -5,6 +5,7 @@ import android.arch.lifecycle.MediatorLiveData;
 import android.support.annotation.Nullable;
 
 import com.blankj.utilcode.util.NetworkUtils;
+import com.blankj.utilcode.util.TimeUtils;
 import com.lxy.livedata.Resource;
 import com.lxy.livedata.SkilActivity;
 import com.lxy.livedata.SkilBean;
@@ -15,7 +16,9 @@ import com.lxy.livedata.db.SkillEntityDao;
 import com.lxy.livedata.di.component.DaggerMainComponent;
 import com.lxy.livedata.rx.RxHttpResponse;
 import com.lxy.livedata.ui.entity.SkilEntity;
+import com.lxy.livedata.utils.DateUtil;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -122,12 +125,12 @@ public class SkilRepository {
                 SkillEntityDao skillDao = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
                         .getSkillDao();
                 System.out.println("db=====list1==" + liveData.getValue().data.size());
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        skillDao.deleteAllEntity(skilEntities);
-//                    }
-//                }).start();
+                /*new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        skillDao.deleteAllEntity(skilEntities);
+                    }
+                }).start();*/
 
             }
         });
@@ -164,9 +167,15 @@ public class SkilRepository {
                         liveData.postValue(Resource.success(list));
 
                         for (SkilEntity entity : list) {
+
+                            Date date = DateUtil.parseDate(entity.publishedAt);
+                            long l = TimeUtils.date2Millis(date);
+                            entity.sortDate = l;
+
                             skillDao.addEntity(entity);
+                            // System.out.println("db=====long==" + l);
                         }
-                        System.out.println("db=====add==" + page);
+
                     }
 
                     @Override

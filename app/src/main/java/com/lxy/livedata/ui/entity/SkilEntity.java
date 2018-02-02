@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
  */
 
 @Entity(tableName = "android2")
-public class SkilEntity {
+public class SkilEntity implements Comparable<SkilEntity> {
 
     @PrimaryKey
     @NonNull
@@ -27,4 +27,19 @@ public class SkilEntity {
 
     public String test;
     public String test2;
+
+    public String t3;
+
+    public Integer time;
+
+    public Integer sortTime;
+
+    public Long sortDate;
+
+    @Override
+    public int compareTo(@NonNull SkilEntity entity) {
+        long l = this.sortDate - entity.sortDate;
+
+        return (int) l;
+    }
 }

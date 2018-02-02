@@ -11,6 +11,7 @@ import com.lxy.livedata.ui.entity.SkilEntity;
 import com.lxy.livedata.utils.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class SkilAdapter extends BaseQuickAdapter<SkilEntity, BaseViewHolder> {
     public SkilAdapter(int layoutResId, @Nullable List<SkilEntity> data) {
         super(layoutResId, data);
         mList = new ArrayList<>();
+      //  Collections.sort(data);
         mList = data;
     }
 
