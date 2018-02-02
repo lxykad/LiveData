@@ -1,7 +1,10 @@
 package com.lxy.livedata.repository;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.Transformations;
 import android.support.annotation.Nullable;
 
 import com.lxy.livedata.Resource;
@@ -37,14 +40,7 @@ public class LocalDataSource implements SkilDataSource {
 
         MediatorLiveData<Resource<List<SkilEntity>>> liveData = new MediatorLiveData<>();
 
-        dBdata.observe(SkilActivity.getInstance(), new android.arch.lifecycle.Observer<List<SkilEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<SkilEntity> skilEntities) {
-                liveData.setValue(Resource.success(skilEntities));
-                SkillEntityDao skillDao = ArticleDatabase.getInstance(BaseApplication.getInstance().getApplicationContext())
-                        .getSkillDao();
-            }
-        });
+        liveData.addSource(dBdata, list -> liveData.setValue(Resource.success(list)));
 
         return liveData;
     }

@@ -4,13 +4,11 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.lxy.livedata.base.BaseApplication;
+import com.lxy.livedata.base.BaseActivity;
 import com.lxy.livedata.databinding.ActivitySkilBinding;
-import com.lxy.livedata.di.component.DaggerMainComponent;
 import com.lxy.livedata.ui.SkilAdapter;
 import com.lxy.livedata.ui.entity.SkilEntity;
 import com.lxy.livedata.utils.LoadingUtil;
@@ -21,7 +19,7 @@ import java.util.List;
 /**
  * @author a
  */
-public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.RequestLoadMoreListener,
+public class SkilActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener,
         SwipeRefreshLayout.OnRefreshListener {
 
     public static final int PAGE_SIZE = 15;
@@ -31,21 +29,10 @@ public class SkilActivity extends AppCompatActivity implements BaseQuickAdapter.
     private List<SkilEntity> mList;
     private int mPage = 1;
 
-    private static SkilActivity instance;
-    public static SkilActivity getInstance(){
-        return instance;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        instance = this;
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_skil);
-
-        DaggerMainComponent.builder()
-                .appComponent(BaseApplication.getInstance().getAppComponent())
-                .build()
-                .injectSkil(this);
 
         mViewModel = ViewModelProviders.of(this).get(SkilViewModel.class);
 
