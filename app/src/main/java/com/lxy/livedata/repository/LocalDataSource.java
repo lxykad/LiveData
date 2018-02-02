@@ -1,17 +1,11 @@
 package com.lxy.livedata.repository;
 
-import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.Transformations;
-import android.support.annotation.Nullable;
 
 import com.lxy.livedata.Resource;
-import com.lxy.livedata.SkilActivity;
 import com.lxy.livedata.base.BaseApplication;
 import com.lxy.livedata.db.ArticleDatabase;
-import com.lxy.livedata.db.SkillEntityDao;
 import com.lxy.livedata.ui.entity.SkilEntity;
 
 import java.util.List;
