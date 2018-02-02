@@ -4,7 +4,7 @@ import com.lxy.livedata.MainActivity;
 import com.lxy.livedata.SkilActivity;
 import com.lxy.livedata.di.module.MainModule;
 import com.lxy.livedata.di.scope.ActivityScope;
-import com.lxy.livedata.repository.SkilRepository;
+import com.lxy.livedata.repository.RemoteDataSource;
 
 import dagger.Component;
 
@@ -21,5 +21,5 @@ public interface MainComponent {
 
     void injectSkil(SkilActivity activity);
 
-    void injectSkilRep(SkilRepository skilRepository);
+    void injectSkilRep(RemoteDataSource dataSource);
 }
