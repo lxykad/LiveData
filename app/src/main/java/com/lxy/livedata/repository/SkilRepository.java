@@ -16,8 +16,7 @@ import java.util.List;
 
 public class SkilRepository {
 
-    private SkilDataSource mRemoteDataSource = RemoteDataSource.getInstance();
-    private SkilDataSource mLocalDataSource = LocalDataSource.getInstance();
+    private DataSourceContext mDataSourceContext;
 
     /**
      * 获取数据
@@ -25,9 +24,11 @@ public class SkilRepository {
     public MediatorLiveData<Resource<List<SkilEntity>>> getDataList(String type, int count, int page) {
 
         if (NetworkUtils.isConnected()) {
-            return mRemoteDataSource.getData(type, count, page);
+            mDataSourceContext = new DataSourceContext(RemoteDataSource.getInstance());
         } else {
-            return mLocalDataSource.getData(type, count, page);
+            mDataSourceContext = new DataSourceContext(LocalDataSource.getInstance());
         }
+
+        return mDataSourceContext.getData(type, count, page);
     }
 }
